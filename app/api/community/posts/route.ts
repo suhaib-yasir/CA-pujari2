@@ -4,12 +4,17 @@ import { createServerSupabase } from '@/lib/supabaseClient'
 export async function GET() {
   try {
     const supabaseAdmin = createServerSupabase()
-    const { data, error } = await supabaseAdmin.from('courses').select('*').order('created_at', { ascending: false })
+    const { data, error } = await supabaseAdmin
+      .from('community_posts')
+      .select('*')
+      .order('created_at', { ascending: false })
+
     if (error) {
       // eslint-disable-next-line no-console
-      console.error('API /api/courses GET error', error)
+      console.error('API /api/community/posts GET error', error)
       return NextResponse.json({ error: error.message ?? String(error) }, { status: 500 })
     }
+
     return NextResponse.json({ data })
   } catch (err: any) {
     return NextResponse.json({ error: err.message ?? String(err) }, { status: 500 })
@@ -19,30 +24,26 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { title, description, duration, level, modules, price, students_count } = body
+    const { title, content, category, author_name } = body
 
-    if (!title) {
-      return NextResponse.json({ error: 'Missing title' }, { status: 400 })
+    if (!title || !content) {
+      return NextResponse.json({ error: 'Missing title or content' }, { status: 400 })
     }
 
     const supabaseAdmin = createServerSupabase()
     const { data, error } = await supabaseAdmin
-      .from('courses')
+      .from('community_posts')
       .insert({
         title,
-        description,
-        duration,
-        level,
-        modules: modules || 0,
-        price,
-        students_count: students_count || 0,
-        created_at: new Date().toISOString(),
+        content,
+        category: category || 'General',
+        author_name: author_name || 'Anonymous',
       })
       .select('*')
 
     if (error) {
       // eslint-disable-next-line no-console
-      console.error('API /api/courses POST error', error)
+      console.error('API /api/community/posts POST error', error)
       return NextResponse.json({ error: error.message ?? String(error) }, { status: 500 })
     }
 
