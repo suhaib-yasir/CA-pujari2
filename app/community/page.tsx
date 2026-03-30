@@ -1,49 +1,144 @@
-import Image from "next/image"
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
+'use client';
+
+import { useRef } from "react";
+import HeroScene from "@/components/community/HeroScene";
+import UIOverlay from "@/components/community/UIOverlay";
+import StatsSection from "@/components/community/StatsSection";
+import FeatureCards from "@/components/community/FeatureCards";
+import PostsSection from "@/components/community/PostsSection";
+import Navbar from "@/components/community/Navbar";
+import { useTheme } from "@/hooks/useTheme";
 
 export default function CommunityPage() {
+  const { isLight } = useTheme();
+
+  // ── SAME blue palette family, dark vs light ────────────────────────────
+  const separatorGradient = isLight
+    ? "linear-gradient(to right, transparent, rgba(212,165,116,0.40), rgba(212,165,116,0.38), rgba(212,165,116,0.32), transparent)"
+    : "linear-gradient(to right, transparent, rgba(79,209,255,0.5), rgba(59,130,246,0.5), rgba(139,92,246,0.5), transparent)";
+  const separatorGlow = isLight
+    ? "linear-gradient(to right, transparent, rgba(212,165,116,0.85), transparent)"
+    : "linear-gradient(to right, transparent, rgba(79,209,255,1), transparent)";
+  const dividerLine = isLight
+    ? "linear-gradient(to right, transparent, rgba(212,165,116,0.20), rgba(212,165,116,0.16), transparent)"
+    : "linear-gradient(to right, transparent, rgba(79,209,255,0.2), rgba(59,130,246,0.2), transparent)";
+  const footerBorder = isLight
+    ? "1px solid rgba(212,165,116,0.14)"
+    : "1px solid rgba(79,209,255,0.08)";
+  const footerGlow = isLight
+    ? "radial-gradient(ellipse, rgba(212,165,116,0.10) 0%, transparent 70%)"
+    : "radial-gradient(ellipse, rgba(59,130,246,0.12) 0%, transparent 70%)";
+  const logoBg = isLight
+    ? "linear-gradient(135deg, #D4A574, #C99564)"
+    : "linear-gradient(135deg, #4FD1FF, #3B82F6)";
+  const logoShadow = isLight
+    ? "0 2px 14px rgba(212,165,116,0.40)"
+    : "0 0 14px rgba(79,209,255,0.4)";
+  const footerTextColor = isLight
+    ? "rgba(107,94,32,0.58)"
+    : "rgba(165,180,252,0.45)";
+  const footerTextMutColor = isLight
+    ? "rgba(107,94,32,0.38)"
+    : "rgba(165,180,252,0.25)";
+
   return (
-    <>
-      <Navigation />
+    <div style={{
+      background: isLight ? "#EDE0C4" : "#050816",
+      minHeight: "100vh",
+      color: isLight ? "#000000" : "#EAF2FF",
+      fontFamily: "'Inter', sans-serif",
+      transition: "background 0.6s ease, color 0.4s ease",
+    }}>
 
-      {/* Header Section */}
-      <section className="py-16 bg-gradient-to-r from-primary to-accent">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary-foreground mb-4">Trading Community</h1>
-          <p className="text-xl text-primary-foreground/90 max-w-2xl mx-auto">
-            Learn, share, and grow with thousands of traders. Ask questions and share your experiences.
-          </p>
+      {/* ── FIXED FULL-PAGE CINEMATIC BACKGROUND ── */}
+      <div style={{
+        position: "fixed",
+        top: 0, left: 0,
+        width: "100vw", height: "100vh",
+        zIndex: 0,
+        pointerEvents: "none",
+      }}>
+        <HeroScene />
+      </div>
+
+      {/* ── SCROLLABLE CONTENT (on top of fixed bg) ── */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <Navbar />
+
+        {/* Hero section — full viewport, no bg of its own */}
+        <section style={{
+          position: "relative",
+          height: "100vh",
+          minHeight: "600px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          <UIOverlay />
+        </section>
+
+        {/* Animated separator */}
+        <div style={{ position: "relative", height: "2px", overflow: "hidden" }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            background: separatorGradient,
+            transition: "background 0.6s ease",
+          }} />
         </div>
-      </section>
 
-      {/* Two-column intro section with image */}
-      <section className="py-16 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="w-full">
-              <Image src="/community.png" alt="Community" width={800} height={600} className="rounded-2xl shadow-medium w-full h-auto object-cover" />
+        <main>
+          <StatsSection />
+          <FeatureCards />
+          <PostsSection />
+        </main>
+
+        {/* Footer */}
+        <footer style={{
+          padding: "64px 24px 40px",
+          position: "relative", zIndex: 2,
+          borderTop: footerBorder,
+          marginTop: "80px",
+          transition: "border-color 0.6s ease",
+        }}>
+          <div style={{
+            position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)",
+            width: "90%", height: "1px",
+            background: dividerLine, transition: "background 0.6s ease",
+          }} />
+          <div style={{
+            position: "absolute", top: "-1px", left: "50%", transform: "translateX(-50%)",
+            width: "60%", height: "80px",
+            background: footerGlow, transition: "background 0.6s ease", pointerEvents: "none",
+          }} />
+
+          <div style={{ maxWidth: "1200px", margin: "0 auto", textAlign: "center" }}>
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: "12px",
+              marginBottom: "20px",
+            }}>
+              <div style={{
+                width: "40px", height: "40px",
+                borderRadius: "50%",
+                background: logoBg,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "20px", boxShadow: logoShadow,
+                transition: "all 0.6s ease",
+              }}>📈</div>
+              <span style={{
+                color: isLight ? "#000000" : "#EAF2FF",
+                fontWeight: 700, fontSize: "1.1rem",
+                transition: "color 0.4s ease",
+              }}>TradeVerse</span>
             </div>
-
-            <div>
-              <h2 className="text-3xl font-bold text-foreground mb-4">Community Hub</h2>
-              <p className="text-muted-foreground mb-6">Learn, share strategies, and grow together with traders worldwide. No sign-up needed!</p>
-
-              <div className="mb-6">
-                <button className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground font-semibold shadow-sm hover:opacity-95 transition">
-                  Create Post
-                </button>
-              </div>
-
-              <div className="py-8 border border-border rounded-xl bg-card p-6">
-                <p className="text-muted-foreground">No posts yet. Be the first to share your trading insights!</p>
-              </div>
-            </div>
+            <p style={{ color: footerTextColor, fontSize: "0.85rem", transition: "color 0.4s ease" }}>
+              © 2026 TradeVerse. Built for traders, by traders.
+            </p>
+            <p style={{ color: footerTextMutColor, fontSize: "0.75rem", marginTop: "8px", transition: "color 0.4s ease" }}>
+              Trading involves risk. Past performance is not indicative of future results.
+            </p>
           </div>
-        </div>
-      </section>
-
-      <Footer />
-    </>
-  )
+        </footer>
+      </div>
+    </div>
+  );
 }
