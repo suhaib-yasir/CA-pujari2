@@ -3,7 +3,7 @@ import { Linkedin, Youtube, Mail } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground py-12">
+    <footer className="bg-[#E2D6C2] text-[#3E3730] py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
@@ -75,7 +75,7 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <div className="border-t border-primary-foreground/20 pt-8 text-center text-sm">
+        <div className="border-t border-[#3E3730]/20 pt-8 text-center text-sm">
           <p>&copy; 2026 Shobha Pujari. All rights reserved.</p>
         </div>
       </div>

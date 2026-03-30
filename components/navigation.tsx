@@ -58,12 +58,14 @@ export function Navigation() {
 
     if (!user)
       return (
-        <button 
-          onClick={() => router.push('/login')} 
-          className="flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-sm"
+        <button
+          onClick={() => router.push('/login')}
+          className="group relative flex items-center justify-center gap-2 px-6 py-2 text-[14px] font-bold rounded-full bg-gradient-to-b from-[#D1AF62] to-[#b69650] text-white hover:from-[#DAC07A] hover:to-[#c6a358] border border-[#E9D59E]/30 shadow-[0_4px_12px_rgba(209,175,98,0.35)] hover:shadow-[0_8px_22px_rgba(209,175,98,0.5)] hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98] active:shadow-[0_2px_8px_rgba(209,175,98,0.35)] transition-all duration-300 ease-out overflow-hidden"
         >
-          <LogIn size={16} />
-          <span>Login</span>
+          {/* Subtle shine effect on hover */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-[800ms] ease-in-out skew-x-12" />
+          <LogIn size={16} className="relative z-10 drop-shadow-sm" />
+          <span className="relative z-10 tracking-wide drop-shadow-sm">Login</span>
         </button>
       )
 
@@ -75,8 +77,8 @@ export function Navigation() {
           </div>
           <span className="text-xs font-medium max-w-[100px] truncate">{displayName}</span>
         </div>
-        <button 
-          onClick={handleSignOut} 
+        <button
+          onClick={handleSignOut}
           className="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors"
           title="Sign Out"
         >
@@ -93,15 +95,14 @@ export function Navigation() {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: hidden ? "-120%" : 0, opacity: hidden ? 0 : 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 28 }}
-        className={`pointer-events-auto w-full max-w-6xl rounded-full transition-all duration-500 ${
-          scrolled
-            ? "bg-[#F7F2E8]/80 backdrop-blur-xl border border-[#A38970]/30 shadow-xl py-2"
-            : "bg-[#F7F2E8]/40 backdrop-blur-md border border-transparent shadow-none py-4"
-        }`}
+        className={`pointer-events-auto w-full max-w-6xl rounded-full transition-all duration-500 ${scrolled
+          ? "bg-[#F7F2E8]/80 backdrop-blur-xl border border-[#A38970]/30 shadow-xl py-2"
+          : "bg-[#F7F2E8]/40 backdrop-blur-md border border-transparent shadow-none py-4"
+          }`}
       >
         <div className="px-5 md:px-8">
           <div className="flex justify-between items-center">
-            
+
             {/* Logo */}
             <button
               onClick={() => router.push("/")}
@@ -120,9 +121,8 @@ export function Navigation() {
                   <button
                     key={item.href}
                     onClick={() => router.push(item.href)}
-                    className={`relative px-5 py-2 text-sm font-semibold rounded-full transition-colors duration-300 ${
-                      isActive ? "text-white" : "text-[#A38970] hover:text-[#3E3730]"
-                    }`}
+                    className={`relative px-5 py-2 text-sm font-semibold rounded-full transition-colors duration-300 ${isActive ? "text-white" : "text-[#A38970] hover:text-[#3E3730]"
+                      }`}
                   >
                     {isActive && (
                       <motion.div
@@ -177,9 +177,8 @@ export function Navigation() {
                         router.push(item.href)
                         setIsOpen(false)
                       }}
-                      className={`flex items-center px-5 py-4 rounded-2xl text-[15px] font-semibold transition-all ${
-                       isActive ? "bg-[#D1AF62]/10 text-[#D1AF62] shadow-sm" : "text-[#3E3730] hover:bg-white/50"
-                      }`}
+                      className={`flex items-center px-5 py-4 rounded-2xl text-[15px] font-semibold transition-all ${isActive ? "bg-[#D1AF62]/10 text-[#D1AF62] shadow-sm" : "text-[#3E3730] hover:bg-white/50"
+                        }`}
                     >
                       {item.label}
                     </button>

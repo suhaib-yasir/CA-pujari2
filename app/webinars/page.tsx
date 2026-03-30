@@ -1,20 +1,24 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
+
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import { Calendar, Clock, Users, Video } from "lucide-react"
-import Image from "next/image"
-import WebinarBookButton from "@/components/webinar-book-button"
+import { Calendar, Users, Video, CreditCard } from "lucide-react"
 import { motion } from "framer-motion"
-import { fadeUp, stagger } from "@/lib/animations"
-import supabase from "@/lib/supabaseClient"
+import { Playfair_Display } from "next/font/google"
+import Image from "next/image"
+
+const playfair = Playfair_Display({ subsets: ["latin"] })
+
+import { premiumFadeUp, premiumStagger } from "@/lib/animations"
+import { PremiumCard } from "@/components/ui/premium-card"
 
 function formatDateTime(iso?: string) {
   if (!iso) return '-'
   try {
     return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Kolkata',
       day: 'numeric',
       month: 'short',
       year: 'numeric',
@@ -31,6 +35,7 @@ function formatDate(iso?: string) {
   if (!iso) return '-'
   try {
     return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Kolkata',
       day: 'numeric',
       month: 'short',
       year: 'numeric',
@@ -100,16 +105,31 @@ export default function WebinarsPage() {
     { id: 'p2', title: 'Market Psychology 101', starts_at: '2025-12-28T19:00:00+05:30' },
     { id: 'p3', title: 'Technical Analysis Deep Dive', starts_at: '2025-12-15T19:00:00+05:30' },
   ]
-   console.log('Loaded webinars:', { upcomingWebinars, pastWebinars })
+
   const effectiveUpcoming = upcomingWebinars.length ? upcomingWebinars : defaultUpcoming
   const effectivePast = pastWebinars.length ? pastWebinars : defaultPast
 
   return (
-    <div className="finance-theme">
+    <main
+      style={{
+        '--fin-bg-primary': '#F7F2E8',
+        '--fin-bg-secondary': '#EBE5D8',
+        '--fin-bg-accent': '#DFD8CC',
+        '--fin-gradient-hero': 'linear-gradient(90deg, #FBF8F2 0%, #F7F2E8 50%, #F5F0E6 100%)',
+        '--fin-text-primary': '#3E3730',
+        '--fin-text-secondary': '#645E56',
+        '--fin-text-light': '#8A847C',
+        '--fin-accent-gold': '#D1AF62',
+        '--fin-accent-soft-gold': '#A38970',
+        '--fin-border-light': '#A38970',
+        '--fin-border-divider': '#D6CCBE'
+      } as React.CSSProperties}
+      className="bg-white min-h-screen text-[var(--fin-text-primary)] transition-colors duration-500 font-sans"
+    >
       <Navigation />
 
       {/* HERO — EXPERIENCE FIRST (video background with translucent overlay) */}
-      <section className="relative min-h-screen overflow-hidden">
+      <section className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden border-b border-[var(--fin-border-divider)] perspective-1000">
         <video
           src="/finance.mp4"
           autoPlay
@@ -120,244 +140,160 @@ export default function WebinarsPage() {
         />
 
         {/* dark translucent overlay so text remains readable */}
-        <div className="absolute inset-0 bg-black/45 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
 
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative max-w-5xl mx-auto px-6 text-center z-10 flex flex-col justify-center min-h-screen"
+          variants={premiumStagger}
+          initial="hidden"
+          animate="visible"
+          className="relative max-w-5xl mx-auto px-6 text-center z-10"
         >
-          {/* Translucent cream glass panel to improve text legibility */}
-          <div
-            className="mx-auto w-full max-w-3xl rounded-2xl p-10 shadow-medium"
-            style={{ backgroundColor: 'rgba(242,232,216,0.86)', border: '1px solid rgba(255,255,255,0.08)' }}
+          {/* Translucent premium glass panel to improve text legibility */}
+          <motion.div
+            variants={premiumFadeUp}
+            className="mx-auto w-full max-w-3xl rounded-2xl p-10 md:p-14 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] backdrop-blur-md"
+            style={{ backgroundColor: 'rgba(247,242,232,0.85)', border: '1px solid rgba(214,204,190,0.4)' }}
           >
-            <p className="uppercase tracking-widest mb-4 hero-foreground" style={{ color: 'var(--color-text-light)' }}>
-              Learn Live. Ask Questions. Grow Faster.
+            <p className="uppercase tracking-[0.2em] text-[var(--fin-text-secondary)] mb-6 font-semibold text-sm">
+              Learn Live • Ask Questions • Grow Faster
             </p>
 
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 hero-foreground" style={{ color: 'var(--color-text-primary)' }}>
+            <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 text-[var(--fin-text-primary)] ${playfair.className} tracking-tight leading-tight`}>
               Live Trading Webinars
             </h1>
 
-            <p className="text-xl max-w-2xl mx-auto hero-foreground" style={{ color: 'var(--color-text-light)' }}>
+            <p className="text-xl max-w-2xl mx-auto text-[var(--fin-text-secondary)] leading-relaxed">
               Interactive sessions designed to give beginners real clarity — not recorded noise.
             </p>
-          </div>
+          </motion.div>
         </motion.div>
       </section>
 
-      {/* MAIN + SIDEBAR LAYOUT */}
-      <section className="py-20 bg-background">
+      {/* UPCOMING WEBINARS GRID (Matching Courses Layout) */}
+      <section className="py-24 bg-white relative">
         <motion.div
-          variants={stagger}
+          variants={premiumStagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           className="max-w-7xl mx-auto px-6"
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* MAIN (left two columns on md+) */}
-            <div className="md:col-span-2">
-              <motion.h2 variants={fadeUp} className="text-4xl font-bold mb-8">
-                Upcoming Sessions
-              </motion.h2>
+          <div className="text-center mb-16">
+            <motion.h2
+              variants={premiumFadeUp}
+              className={`text-4xl md:text-5xl font-bold mb-4 text-[var(--fin-text-primary)] ${playfair.className}`}
+            >
+              Upcoming Sessions
+            </motion.h2>
+            <motion.p variants={premiumFadeUp} className="text-lg text-[var(--fin-text-secondary)] max-w-2xl mx-auto">
+              Showing {effectiveUpcoming.length} upcoming interactive webinar(s). Secure your seat now.
+            </motion.p>
+          </div>
 
-              {loading && <div>Loading webinars...</div>}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+            {loading && <div className="col-span-full text-center py-20 text-[var(--fin-text-secondary)] font-medium">Loading premium webinars...</div>}
+            {!loading && effectiveUpcoming.length === 0 && <div className="col-span-full text-center py-20 text-[var(--fin-text-secondary)]">No upcoming sessions available.</div>}
 
-              <div className="mb-6 text-sm text-muted-foreground">
-                Showing {effectiveUpcoming.length} upcoming webinar(s)
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8">
-                {effectiveUpcoming.map((w) => (
-                  <motion.div
-                    key={w.id}
-                    variants={fadeUp}
-                    whileHover={{ y: -8 }}
-                    className="rounded-2xl bg-gradient-to-br from-white/3 to-white/2 backdrop-blur-md border border-white/10 shadow-lg transition overflow-hidden"
-                  >
-                    <div className="p-7 space-y-5">
-                      <h3 className="text-2xl font-bold leading-tight">{w.title}</h3>
-
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="flex items-start gap-3">
-                          <Calendar className="text-accent mt-1" />
-                          <div>
-                            <p className="text-muted-foreground">Date</p>
-                            <p className="font-semibold">{w.starts_at ? formatDateTime(w.starts_at) : '-'}</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                          <Clock className="text-accent mt-1" />
-                          <div>
-                            <p className="text-muted-foreground">Duration</p>
-                            <p className="font-semibold">{w.duration_minutes ? `${w.duration_minutes} mins` : '-'}</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                          <Video className="text-accent mt-1" />
-                          <div>
-                            <p className="text-muted-foreground">Platform</p>
-                            <p className="font-semibold">{w.platform}</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                          <Users className="text-accent mt-1" />
-                          <div>
-                            <p className="text-muted-foreground">Seats</p>
-                            <p className="font-semibold">{w.seats ?? '-'}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="pt-5 border-t border-white/6 flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Price</p>
-                          <p className="text-2xl font-extrabold text-primary">{w.price}</p>
-                        </div>
-                        <WebinarBookButton id={w.id} />
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Payments block */}
-              {/* payments removed here to avoid duplication; single payments section is below */}
-            </div>
-
-            {/* SIDEBAR (right column) */}
-            <aside className="space-y-8">
-              {/* Mini hero / decorative */}
-              <div className="rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 p-6 flex flex-col items-center text-center">
-                <div className="w-40 h-40 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl">
-                  {/* placeholder cube */}
-                  <div className="w-20 h-20 bg-white/10 rounded-md" />
-                </div>
-                <h4 className="mt-4 font-bold text-lg text-primary-foreground">Book Your Seat</h4>
-                <p className="text-sm text-muted-foreground mt-2">Learn live. Ask questions. Grow faster.</p>
-                <div className="mt-4">
-                  <a className="inline-block px-5 py-2 rounded-full bg-primary text-primary-foreground font-semibold">Book Seat</a>
-                </div>
-              </div>
-
-              {/* Compact Upcoming list */}
-              <div className="rounded-2xl bg-card p-4">
-                <h5 className="font-bold mb-3">Upcoming Sessions</h5>
-                <div className="space-y-3">
-                  {effectiveUpcoming.slice(0,3).map((w) => (
-                    <div key={w.id} className="flex items-start gap-3 p-3 rounded-lg bg-background/30">
-                      <div className="flex-1">
-                        <p className="font-semibold">{w.title}</p>
-                        <p className="text-sm text-muted-foreground">{w.starts_at ? formatDate(w.starts_at) : ''}</p>
-                      </div>
-                      <WebinarBookButton id={w.id} size="sm" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Past sessions (recorded) */}
-              <div className="rounded-2xl bg-card p-4">
-                <h5 className="font-bold mb-4">Past Sessions (Recorded)</h5>
-                <div className="space-y-3">
-                  {effectivePast.slice(0,4).map((w) => (
-                    <div key={w.id} className="flex items-center justify-between gap-3 p-3 rounded-lg bg-background/20">
-                      <div>
-                        <p className="font-semibold">{w.title}</p>
-                        <p className="text-sm text-muted-foreground">{w.starts_at ? formatDate(w.starts_at) : ''}</p>
-                      </div>
-                      <button className="px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm">Watch</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </aside>
+            {effectiveUpcoming.map((w) => (
+              <PremiumCard
+                key={w.id}
+                id={w.id}
+                title={w.title}
+                description={w.description || 'Join this live session to build your trading foundation with expert guidance and real-time Q&A.'}
+                badgeLabel="Live Session"
+                metaItems={[
+                  { icon: <Calendar size={16} />, label: w.starts_at ? formatDateTime(w.starts_at) : '-' },
+                  { icon: <Video size={16} />, label: w.platform || 'Online Platform' },
+                  { icon: <Users size={16} />, label: `${w.seats || 0} seats available` }
+                ]}
+                price={w.price || 'Free'}
+                priceLabel="Reserve"
+                actionUrl={`/webinars/book/${w.id}`}
+                actionLabel="Book Seat"
+              />
+            ))}
           </div>
         </motion.div>
       </section>
 
       {/* PAYMENT — SOFT TRUST */}
-      <section className="py-24 bg-muted">
+      <section className="py-20 bg-[var(--fin-bg-primary)]/30 border-t border-[var(--fin-border-divider)]">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          variants={premiumStagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
           className="max-w-4xl mx-auto px-6 text-center"
         >
-          <h2 className="text-3xl font-bold mb-10">
+          <motion.h2 variants={premiumFadeUp} className={`text-3xl font-bold mb-10 text-[var(--fin-text-primary)] ${playfair.className}`}>
             Simple & Secure Payments
-          </h2>
+          </motion.h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="rounded-2xl bg-background py-6 flex items-center justify-center shadow-sm">
+          <motion.div variants={premiumStagger} className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <motion.div variants={premiumFadeUp} className="rounded-2xl bg-white border border-[var(--fin-border-divider)] py-6 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[var(--fin-accent-gold)] transition-all duration-300">
               <Image src="/upi.svg" alt="UPI" width={72} height={72} />
-            </div>
+            </motion.div>
 
-            <div className="rounded-2xl bg-background py-6 flex items-center justify-center shadow-sm">
+            <motion.div variants={premiumFadeUp} className="rounded-2xl bg-white border border-[var(--fin-border-divider)] py-6 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[var(--fin-accent-gold)] transition-all duration-300">
               <Image src="/razorpay.svg" alt="Razorpay" width={96} height={48} />
-            </div>
+            </motion.div>
 
-            <div className="rounded-2xl bg-background py-6 flex items-center justify-center shadow-sm">
+            <motion.div variants={premiumFadeUp} className="rounded-2xl bg-white border border-[var(--fin-border-divider)] py-6 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[var(--fin-accent-gold)] transition-all duration-300">
               <Image src="/paytm.svg" alt="Paytm" width={96} height={48} />
-            </div>
+            </motion.div>
 
-            <div className="rounded-2xl bg-background py-6 flex items-center justify-center shadow-sm">
-              <Image src="/cards.png" alt="Cards" width={96} height={48} />
-            </div>
-          </div>
+            <motion.div variants={premiumFadeUp} className="rounded-2xl bg-white border border-[var(--fin-border-divider)] py-6 flex flex-col gap-2 items-center justify-center shadow-sm hover:shadow-md hover:border-[var(--fin-accent-gold)] transition-all duration-300 text-[var(--fin-text-primary)]">
+              <CreditCard size={40} className="text-[var(--fin-accent-gold)]" />
+              <span className="text-xs font-semibold tracking-wider uppercase">Cards</span>
+            </motion.div>
+          </motion.div>
         </motion.div>
       </section>
 
-      {/* RECORDED SESSIONS */}
-      <section className="py-28 bg-background">
+      {/* PAST SESSIONS GRID (Matching specific structure but with past label) */}
+      <section className="py-24 bg-[var(--fin-bg-primary)]/40 relative border-t border-[var(--fin-border-divider)]">
         <motion.div
-          variants={stagger}
+          variants={premiumStagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           className="max-w-7xl mx-auto px-6"
         >
-          <motion.h2
-            variants={fadeUp}
-            className="text-4xl font-bold mb-16"
-          >
-            Past Sessions (Recorded)
-          </motion.h2>
+          <div className="text-center mb-16">
+            <motion.h2
+              variants={premiumFadeUp}
+              className={`text-4xl md:text-5xl font-bold mb-4 text-[var(--fin-text-primary)] ${playfair.className}`}
+            >
+              Past Sessions (Recorded)
+            </motion.h2>
+            <motion.p variants={premiumFadeUp} className="text-lg text-[var(--fin-text-secondary)] max-w-2xl mx-auto">
+              Catch up on what you missed.
+            </motion.p>
+          </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
-            {pastWebinars.map((w) => (
-              <motion.div
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+            {effectivePast.map((w) => (
+              <PremiumCard
                 key={w.id}
-                variants={fadeUp}
-                whileHover={{ scale: 1.04 }}
-                className="rounded-3xl bg-card shadow-md overflow-hidden"
-              >
-                <div className="h-44 bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                  <Video size={48} className="text-primary-foreground/70" />
-                </div>
-
-                <div className="p-8">
-                  <h3 className="font-bold mb-2">{w.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-6">{w.starts_at ? formatDate(w.starts_at) : ''}</p>
-
-                  <button className="w-full py-3 rounded-xl border border-primary
-                    text-primary font-semibold hover:bg-primary hover:text-primary-foreground transition">
-                    Watch Recording
-                  </button>
-                </div>
-              </motion.div>
+                id={w.id}
+                title={w.title}
+                description={
+                  <span className="font-medium text-sm">
+                    Recorded on: {w.starts_at ? formatDate(w.starts_at) : 'Unknown'}
+                  </span>
+                }
+                accentColor="silver"
+                topIcon={<Video size={24} />}
+                actionLabel="Watch Recording"
+                actionUrl="#"
+                fullWidthButton={true}
+              />
             ))}
           </div>
         </motion.div>
       </section>
 
       <Footer />
-    </div>
+    </main>
   )
 }

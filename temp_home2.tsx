@@ -1,10 +1,10 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useRef, useState } from "react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { Star, Users, TrendingUp } from "lucide-react"
+import { Star, Users, TrendingUp, ArrowRight } from "lucide-react"
 import { motion, useScroll, useTransform, useMotionValueEvent, useSpring } from "framer-motion"
 import { fadeUp, stagger } from "@/lib/animations"
 import { BentoGallery } from "@/components/blocks/bento-gallery"
@@ -94,7 +94,7 @@ export default function Home() {
     <>
       <Navigation />
 
-      {/* HERO — SEQUENCE ANIMATION */}
+      {/* HERO ΓÇö SEQUENCE ANIMATION */}
       <section ref={heroRef} className="relative h-[400vh] bg-[#F7F2E8]">
         <div className="sticky top-0 h-[100vh] overflow-hidden flex items-center justify-center">
           
@@ -162,7 +162,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* TESTIMONIALS — SOCIAL PROOF */}
+      {/* TESTIMONIALS ΓÇö SOCIAL PROOF */}
       <section className="py-32 bg-white text-[#3E3730] relative border-t border-[#A38970]/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(209,175,98,0.1),transparent_70%)] pointer-events-none" />
         <motion.div
@@ -197,7 +197,7 @@ export default function Home() {
               {
                 name: "Priya Sharma",
                 role: "Beginner Trader",
-                text: "No fear anymore. I finally understand what I’m doing and approach the market calmly.",
+                text: "No fear anymore. I finally understand what IΓÇÖm doing and approach the market calmly.",
                 initials: "PS",
               },
               {
@@ -220,7 +220,7 @@ export default function Home() {
                   </div>
 
                   <p className="text-[#3E3730] mb-10 leading-relaxed text-lg italic font-medium">
-                    &ldquo;{t.text}&rdquo;
+                    ΓÇ£{t.text}ΓÇ¥
                   </p>
                 </div>
 
@@ -239,7 +239,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* CTA — PERSONAL INVITE */}
+      {/* CTA ΓÇö PERSONAL INVITE */}
       <section className="py-48 bg-white text-[#3E3730] relative border-t border-[#A38970]/20 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(188,114,96,0.06),transparent_60%)] pointer-events-none" />
         <motion.div
@@ -253,7 +253,7 @@ export default function Home() {
             Start Your Trading Journey the Right Way
           </h2>
           <p className="text-xl text-[#A38970] mb-12 max-w-2xl mx-auto">
-            Learn with structure, discipline, and clarity &mdash; not shortcuts.
+            Learn with structure, discipline, and clarity ΓÇö not shortcuts.
           </p>
 
           <Link

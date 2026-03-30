@@ -4,47 +4,13 @@ import { useEffect, useState, useRef } from "react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { Clock, Users, ArrowRight, Book } from "lucide-react"
+import { Clock, Users, Book } from "lucide-react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import supabase from "@/lib/supabaseClient"
+
 import { Playfair_Display } from "next/font/google"
-
 const playfair = Playfair_Display({ subsets: ["latin"] })
-
-// --- Premium Animation System ---
-const premiumEasing: [number, number, number, number] = [0.22, 1, 0.36, 1]
-
-const premiumStagger = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2, // intentional, luxury pacing
-      delayChildren: 0.1,
-    }
-  }
-}
-
-const premiumFadeUp = {
-  hidden: { opacity: 0, y: 40, scale: 0.96, filter: "blur(5px)" },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    scale: 1, 
-    filter: "blur(0px)",
-    transition: { duration: 0.9, ease: premiumEasing }
-  }
-}
-
-const microPop = {
-  hidden: { opacity: 0, scale: 0.8, filter: "blur(2px)" },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    filter: "blur(0px)",
-    transition: { duration: 0.7, ease: premiumEasing } 
-  }
-}
+import { premiumFadeUp, premiumStagger } from "@/lib/animations"
+import { PremiumCard } from "@/components/ui/premium-card"
 
 type Course = {
   id: string
@@ -242,94 +208,22 @@ export default function CoursesPage() {
             {!loading && effectiveCourses.length === 0 && <div className="col-span-full text-center py-20 text-[var(--fin-text-secondary)]">No courses available.</div>}
             
             {effectiveCourses.map((course) => (
-              <motion.div
+              <PremiumCard
                 key={course.id}
-                variants={premiumFadeUp}
-                whileHover={{ y: -10, scale: 1.02 }}
-                transition={{ duration: 0.5, ease: premiumEasing }}
-                className="group relative flex flex-col rounded-2xl bg-[var(--fin-bg-primary)] border border-[var(--fin-border-light)] shadow-sm hover:border-[var(--fin-accent-gold)]/40 hover:shadow-[0_30px_60px_-15px_rgba(62,55,48,0.15)] overflow-hidden transition-all duration-500 will-change-transform"
-              >
-                {/* Subtle internal atmospheric glow on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
-
-                {/* Clean top accent bar */}
-                <div className="h-2 w-full bg-[var(--fin-border-divider)] group-hover:bg-[var(--fin-accent-gold)] transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
-                
-                <div className="p-8 md:p-10 flex flex-col h-full bg-white relative z-10 transition-colors duration-500 group-hover:bg-transparent">
-                  {/* LEVEL TAG */}
-                  <motion.span 
-                    variants={premiumStagger}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    className="inline-block px-4 py-1.5 mb-8 text-xs font-bold uppercase tracking-wider
-                    rounded-full bg-[var(--fin-bg-secondary)]/50 text-[var(--fin-text-primary)] w-fit border border-[var(--fin-border-light)] shadow-sm"
-                  >
-                    {course.level}
-                  </motion.span>
-
-                  {/* TITLE */}
-                  <h3 className={`text-2xl md:text-3xl font-bold mb-4 text-[var(--fin-text-primary)] leading-snug ${playfair.className}`}>
-                    {course.title}
-                  </h3>
-
-                  {/* DESCRIPTION */}
-                  <p className="text-[var(--fin-text-secondary)] mb-8 leading-relaxed line-clamp-3">
-                    {course.description}
-                  </p>
-
-                  {/* META */}
-                  <motion.div 
-                    variants={premiumStagger}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    className="space-y-4 text-sm text-[var(--fin-text-secondary)] mb-10 font-medium"
-                  >
-                    <div className="flex items-center gap-3">
-                      <motion.div variants={microPop}><Clock size={16} className="text-[var(--fin-accent-gold)]" /></motion.div>
-                      <motion.span variants={premiumFadeUp}>{course.duration}</motion.span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <motion.div variants={microPop}><Book size={16} className="text-[var(--fin-accent-gold)]" /></motion.div>
-                      <motion.span variants={premiumFadeUp}>{course.modules ?? 0} modules</motion.span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <motion.div variants={microPop}><Users size={16} className="text-[var(--fin-accent-gold)]" /></motion.div>
-                      <motion.span variants={premiumFadeUp}>{course.students_count ?? 0} active learners</motion.span>
-                    </div>
-                  </motion.div>
-
-                  {/* FOOTER */}
-                  <motion.div 
-                    variants={premiumStagger}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    className="mt-auto pt-8 border-t border-[var(--fin-border-light)] group-hover:border-[var(--fin-accent-gold)]/20 transition-colors duration-500 flex items-center justify-between"
-                  >
-                    <div>
-                      <p className="text-xs uppercase tracking-widest text-[var(--fin-text-light)] mb-1 font-semibold">Investment</p>
-                      <motion.p variants={premiumFadeUp} className="text-2xl font-bold text-[var(--fin-text-primary)]">
-                        {course.price}
-                      </motion.p>
-                    </div>
-
-                    <Link
-                      href={`/signup?course=${course.id}`}
-                      className="group/btn px-6 py-3 bg-white border border-[var(--fin-border-light)] text-[var(--fin-text-primary)]
-                      rounded-xl font-semibold flex items-center gap-2
-                      hover:bg-[var(--fin-accent-gold)] hover:border-[var(--fin-accent-gold)] hover:text-white transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] shadow-sm hover:shadow-md hover:-translate-y-1"
-                    >
-                      Enroll Now
-                      <ArrowRight
-                        size={16}
-                        className="transform group-hover/btn:translate-x-1.5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] text-[var(--fin-accent-gold)] group-hover/btn:text-white"
-                      />
-                    </Link>
-                  </motion.div>
-                </div>
-              </motion.div>
+                id={course.id}
+                title={course.title}
+                description={course.description}
+                badgeLabel={course.level}
+                metaItems={[
+                  { icon: <Clock size={16} />, label: course.duration },
+                  { icon: <Book size={16} />, label: `${course.modules ?? 0} modules` },
+                  { icon: <Users size={16} />, label: `${course.students_count ?? 0} active learners` }
+                ]}
+                price={course.price}
+                priceLabel="Investment"
+                actionUrl={`/signup?course=${course.id}`}
+                actionLabel="Enroll Now"
+              />
             ))}
           </div>
         </motion.div>
