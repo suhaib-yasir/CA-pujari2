@@ -5,10 +5,10 @@ import { motion, useInView } from "framer-motion";
 import { useTheme } from "@/hooks/useTheme";
 
 const stats = [
-  { value: 48, suffix: "K+", label: "Active Members", icon: "👥" },
-  { value: 12, suffix: "K+", label: "Trading Signals", icon: "📈" },
-  { value: 98, suffix: "%",  label: "Success Rate",    icon: "🎯" },
-  { value: 24, suffix: "/7", label: "Live Support",    icon: "⚡" },
+  { value: 48, suffix: "K+", label: "Active Members", img: "activemembers.png" },
+  { value: 12, suffix: "K+", label: "Trading Signals", img: "tradingsignals.png" },
+  { value: 98, suffix: "%",  label: "Success Rate",    img: "successrate.png" },
+  { value: 24, suffix: "/7", label: "Live Support",    img: "livesupport.png" },
 ];
 
 function AnimatedCounter({ value, suffix, duration = 2 }: { value: number; suffix: string; duration?: number }) {
@@ -92,7 +92,7 @@ export default function StatsSection() {
                 background: cardBg,
                 backdropFilter: cardBlur, WebkitBackdropFilter: cardBlur,
                 border: cardBorder, borderRadius: "20px",
-                padding: "38px 28px", textAlign: "center",
+                padding: "92px 28px 38px", textAlign: "center",
                 cursor: "default",
                 transition: "all 0.4s ease, border-color 0.3s, box-shadow 0.3s",
                 position: "relative", overflow: "hidden",
@@ -113,7 +113,9 @@ export default function StatsSection() {
               <div style={{ position: "absolute", bottom: 0, left: "20%", right: "20%", height: "1px",
                 background: cardLine, transition: "background 0.6s ease" }} />
 
-              <div style={{ fontSize: "2rem", marginBottom: "14px" }}>{stat.icon}</div>
+              <div style={{ position: "absolute", top: "24px", left: "50%", transform: "translateX(-50%)", width: "88px", height: "88px", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
+                <img src={`/${stat.img}`} alt={stat.label} style={{ width: "77px", height: "77px", objectFit: "cover", borderRadius: "50%", display: "block" }} />
+              </div>
 
               {isLight ? (
                 <div style={{

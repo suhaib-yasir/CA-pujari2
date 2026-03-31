@@ -5,17 +5,17 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useTheme } from "@/hooks/useTheme";
 
 const features = [
-  { icon: "📡", title: "Live Trading Signals",  colorA: "#4FD1FF", colorB: "#3B82F6",
+  { img: "live trading.jpeg", title: "Live Trading Signals",  colorA: "#4FD1FF", colorB: "#3B82F6",
     description: "Get real-time alerts from pro traders. Never miss a high-probability setup with our AI-powered signal system." },
-  { icon: "🎓", title: "Expert Mentorship",      colorA: "#3B82F6", colorB: "#8B5CF6",
+  { img: "expertmentor.jpeg", title: "Expert Mentorship",      colorA: "#3B82F6", colorB: "#8B5CF6",
     description: "Learn from verified traders with years of experience. One-on-one sessions, group webinars, and curated courses." },
-  { icon: "📊", title: "Advanced Analytics",     colorA: "#8B5CF6", colorB: "#4FD1FF",
+  { img: "advancedanalytics.jpeg", title: "Advanced Analytics",     colorA: "#8B5CF6", colorB: "#4FD1FF",
     description: "Deep-dive into market data with institutional-grade tools. Track your performance and optimize your strategy." },
-  { icon: "💬", title: "Community Forums",        colorA: "#4FD1FF", colorB: "#3B82F6",
+  { img: "communityforums.jpeg", title: "Community Forums",        colorA: "#4FD1FF", colorB: "#3B82F6",
     description: "Engage with thousands of traders globally. Share ideas, discuss markets, and build your network." },
-  { icon: "🔒", title: "Risk Management",         colorA: "#3B82F6", colorB: "#8B5CF6",
+  { img: "riskmanagement.jpeg", title: "Risk Management",         colorA: "#3B82F6", colorB: "#8B5CF6",
     description: "Master the art of protecting capital. Our structured risk frameworks keep your portfolio safe." },
-  { icon: "🚀", title: "Exclusive Launches",      colorA: "#8B5CF6", colorB: "#4FD1FF",
+  { img: "exclusivelaunches.jpeg", title: "Exclusive Launches",      colorA: "#8B5CF6", colorB: "#4FD1FF",
     description: "Early access to new trading tools, strategies, and beta features before they go public." },
 ];
 
@@ -88,18 +88,19 @@ function TiltCard({ feature, index }: { feature: typeof features[0]; index: numb
           background: `linear-gradient(to right, transparent, ${cA}50, ${cB}50, transparent)` }} />
 
         <div style={{
-          width: "56px", height: "56px", borderRadius: "14px",
-          background: `linear-gradient(135deg, ${cA}22, ${cB}14)`,
-          border: `1px solid ${cA}45`,
+          width: "88px", height: "88px", borderRadius: "50%",
+          background: "transparent",
+          border: "none",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "1.6rem", marginBottom: "20px",
-          boxShadow: `0 0 20px ${cA}25`,
-          transition: "all 0.4s ease",
+          margin: "0 auto 20px",
+          boxShadow: "none",
+          transition: "all 0.25s ease",
+          overflow: "hidden",
         }}>
-          {feature.icon}
+          <img src={`/${feature.img}`} alt={feature.title} loading="lazy" style={{ width: "70px", height: "70px", objectFit: "cover", borderRadius: "50%", display: "block" }} />
         </div>
 
-        <h3 style={{ color: titleColor, fontSize: "1.12rem", fontWeight: 700, marginBottom: "12px", lineHeight: 1.3, transition: "color 0.4s ease" }}>
+        <h3 style={{ color: titleColor, fontSize: "1.12rem", fontWeight: 700, marginBottom: "12px", lineHeight: 1.3, transition: "color 0.4s ease", textAlign: "center" }}>
           {feature.title}
         </h3>
         <p style={{ color: descColor, fontSize: "0.91rem", lineHeight: 1.68, transition: "color 0.4s ease" }}>
